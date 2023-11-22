@@ -1,0 +1,78 @@
+﻿@page "/"
+@using CurrencyConverter.Services
+@inject Microsoft.JSInterop.IJSRuntime JSRuntime
+
+<div style="padding: 3%;">
+    <center>
+        <h2>You can converter your money</h2>
+    </center>
+
+    <!-- MainPage.razor -->
+
+    <div style="margin-top: 5%;">
+        <form @onsubmit="SubmitForm">
+
+            <div>
+                <center>
+                    <label for="name" style="margin-top:1px;">Value:</label>
+                    <InputNumber id="enteredDouble" @bind-Value="enteredDouble" style="width: 100%; margin-bottom: 3px;" /><br />
+                    <select @bind="selectedCurrency" class="form-control" ItemsSource="@Currencies">
+                        @*
+                        <select @bind="selectedCurrency" class="form-control" ItemsSource="@Currencies">
+                        @foreach (var item in Currencies)
+                        {
+                        <option value="@item">@item</option>
+                        }
+
+                        </select><br />
+                        *@
+                        <option value="USD">United States Dollar (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="JPY">Japanese Yen (JPY)</option>
+                        <!-- Add more currency options as needed -->
+                    </select><br />
+
+
+                    <button type="submit" style="width: 100%;">Converter</button>
+                </center>
+            </div>
+        </form>
+    </div>
+</div>
+
+@code {
+
+    private List<string> Currencies { get; set; }
+    private decimal enteredDouble;
+    private CurrencyConversionService CurrencyConversionService = new();
+    private string selectedCurrency { get; set; } = "USD";
+    string baseCurrency = "BRL";
+
+    protected override void OnInitialized()
+    {
+        // Call the asynchronous initialization method
+        _ = InitializeAsync();
+    }
+
+    private async Task SubmitForm()
+    {
+        if(enteredDouble == 0){
+            JSRuntime.InvokeVoidAsync("alert", @$"Digite um valor para converter");
+        }
+        else
+        {
+            var resultadoConversao = await CurrencyConversionService.ConvertCurrencyAsync(baseCurrency, selectedCurrency, enteredDouble);
+
+            JSRuntime.InvokeVoidAsync("alert", @$"A taxa de câmbio de {baseCurrency} para {selectedCurrency} é: {resultadoConversao.ToString("0.00")}");
+        }
+
+    }
+
+    private async Task InitializeAsync()
+    {
+        var listaCurrency = await CurrencyConversionService.ListCurrency();
+        Currencies = listaCurrency.Select(a => a.Key).ToList();
+    }
+
+
+}
