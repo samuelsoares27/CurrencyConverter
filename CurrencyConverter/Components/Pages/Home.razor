@@ -13,57 +13,68 @@
         <form @onsubmit="SubmitForm">
 
             <div>
-                <center>
-                    <label for="name" style="margin-top:1px;">Value:</label>
-                    <InputNumber id="enteredDouble" @bind-Value="enteredDouble" style="width: 100%; margin-bottom: 3px;" /><br />
-                    <select @bind="selectedCurrency" class="form-control" ItemsSource="@Currencies">
-                        @*
-                        <select @bind="selectedCurrency" class="form-control" ItemsSource="@Currencies">
-                        @foreach (var item in Currencies)
+                <label for="name" style="margin-top:1px; font-weight: bold;">Amount:</label>
+                              
+                    <InputNumber id="enteredDouble" @bind-Value="enteredDouble" style="width: 100%; margin-bottom: 3px;" class="form-control" required />
+                    <label for="name" style="margin-top:1px; font-weight: bold;">From:</label>
+                    <select @bind="selectedCurrencyFrom" class="form-control" >
+                        @if (Currencies != null)
                         {
-                        <option value="@item">@item</option>
+                        <option value="0">Select...</option>
+                            @foreach (var item in Currencies)
+                            {
+                                <option value="@item">@item</option>
+                            }
                         }
 
-                        </select><br />
-                        *@
-                        <option value="USD">United States Dollar (USD)</option>
-                        <option value="EUR">Euro (EUR)</option>
-                        <option value="JPY">Japanese Yen (JPY)</option>
-                        <!-- Add more currency options as needed -->
+                    </select>
+                    <label for="name" style="margin-top:1px; font-weight: bold;">To:</label>
+                    <select @bind="selectedCurrencyTo" class="form-control">
+                        @if (Currencies != null)
+                        {
+                            <option value="0">Select...</option>
+                            @foreach (var item in Currencies)
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        }
+
                     </select><br />
 
-
-                    <button type="submit" style="width: 100%;">Converter</button>
-                </center>
+                    <button type="submit" style="width: 100%;" class="btn btn-primary">Converter</button>
+            
             </div>
         </form>
     </div>
 </div>
 
 @code {
-
-    private List<string> Currencies { get; set; }
+    private List<string> Currencies { get; set; } = new List<string>();
     private decimal enteredDouble;
     private CurrencyConversionService CurrencyConversionService = new();
-    private string selectedCurrency { get; set; } = "USD";
-    string baseCurrency = "BRL";
+    private string selectedCurrencyFrom { get; set; } = string.Empty;
+    private string selectedCurrencyTo { get; set; } = string.Empty;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        // Call the asynchronous initialization method
-        _ = InitializeAsync();
+
+        await InitializeAsync();
+
+        // Call the base implementation to ensure proper initialization
+        await base.OnInitializedAsync();
     }
 
     private async Task SubmitForm()
     {
-        if(enteredDouble == 0){
-            JSRuntime.InvokeVoidAsync("alert", @$"Digite um valor para converter");
+        if (enteredDouble == 0 || selectedCurrencyFrom == "" || selectedCurrencyTo == "")
+        {
+            JSRuntime.InvokeVoidAsync("alert", @$"The input Amount is blank or The Currency was not selected");
         }
         else
         {
-            var resultadoConversao = await CurrencyConversionService.ConvertCurrencyAsync(baseCurrency, selectedCurrency, enteredDouble);
+            var resultadoConversao = await CurrencyConversionService.ConvertCurrencyAsync(selectedCurrencyFrom, selectedCurrencyTo, enteredDouble);
 
-            JSRuntime.InvokeVoidAsync("alert", @$"A taxa de câmbio de {baseCurrency} para {selectedCurrency} é: {resultadoConversao.ToString("0.00")}");
+            JSRuntime.InvokeVoidAsync("alert", @$"The conversion from {selectedCurrencyFrom} to {selectedCurrencyTo} is: {resultadoConversao.ToString("0.00")}");
         }
 
     }
