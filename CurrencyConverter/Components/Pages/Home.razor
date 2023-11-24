@@ -20,7 +20,7 @@
                     <select @bind="selectedCurrencyFrom" class="form-control" >
                         @if (Currencies != null)
                         {
-                        <option value="0">Select...</option>
+                        <option value="">Select...</option>
                             @foreach (var item in Currencies)
                             {
                                 <option value="@item">@item</option>
@@ -32,7 +32,7 @@
                     <select @bind="selectedCurrencyTo" class="form-control">
                         @if (Currencies != null)
                         {
-                            <option value="0">Select...</option>
+                            <option value="">Select...</option>
                             @foreach (var item in Currencies)
                             {
                                 <option value="@item">@item</option>
@@ -42,6 +42,15 @@
                     </select><br />
 
                     <button type="submit" style="width: 100%;" class="btn btn-primary">Converter</button>
+                    <br /><br /><br />
+                    <div>
+                        <center>
+                            <label class="text-danger">@Error</label>
+                            <label class="text-success">@Result</label>
+                        </center>
+                    </div>
+
+
             
             </div>
         </form>
@@ -54,13 +63,13 @@
     private CurrencyConversionService CurrencyConversionService = new();
     private string selectedCurrencyFrom { get; set; } = string.Empty;
     private string selectedCurrencyTo { get; set; } = string.Empty;
+    private string Result { get; set; } = string.Empty;
+    private string Error { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
 
         await InitializeAsync();
-
-        // Call the base implementation to ensure proper initialization
         await base.OnInitializedAsync();
     }
 
@@ -68,13 +77,14 @@
     {
         if (enteredDouble == 0 || selectedCurrencyFrom == "" || selectedCurrencyTo == "")
         {
-            JSRuntime.InvokeVoidAsync("alert", @$"The input Amount is blank or The Currency was not selected");
+            Error = @$"The input Amount is blank or The Currency was not selected";
+            Result = "";
         }
         else
         {
             var resultadoConversao = await CurrencyConversionService.ConvertCurrencyAsync(selectedCurrencyFrom, selectedCurrencyTo, enteredDouble);
-
-            JSRuntime.InvokeVoidAsync("alert", @$"The conversion from {selectedCurrencyFrom} to {selectedCurrencyTo} is: {resultadoConversao.ToString("0.00")}");
+            Result = @$"The conversion from {selectedCurrencyFrom} to {selectedCurrencyTo} is: {resultadoConversao.ToString("0.00")} {selectedCurrencyTo}";
+            Error = "";
         }
 
     }

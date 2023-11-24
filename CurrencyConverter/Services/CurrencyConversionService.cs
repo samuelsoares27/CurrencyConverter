@@ -1,4 +1,5 @@
 ﻿using CurrencyConverter.Models;
+using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
 
 namespace CurrencyConverter.Services
@@ -8,10 +9,7 @@ namespace CurrencyConverter.Services
         private readonly HttpClient _httpClient = new();
         private readonly string _apiKey = "5a2208dd4b70467ba434a5c448e0cf2b";
 
-        public CurrencyConversionService(/*HttpClient httpClient*/)
-        {
-            //_httpClient = httpClient;
-        }
+        public CurrencyConversionService(){ }
 
         public async Task<decimal> ConvertCurrencyAsync(string fromCurrency, string toCurrency, decimal amount)
         {
