@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "135742087116",
+    "project_id": "bdcurrency-e5a7f",
+    "storage_bucket": "bdcurrency-e5a7f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135742087116:android:f2db2f10e963c46ca20769",
+        "android_client_info": {
+          "package_name": "com.currency.convert"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmkOADl2rBtHbs_kzIzpuSOI9CnZWQ5JU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -85,6 +85,7 @@
             var resultadoConversao = await CurrencyConversionService.ConvertCurrencyAsync(selectedCurrencyFrom, selectedCurrencyTo, enteredDouble);
             Result = @$"The conversion from {selectedCurrencyFrom} to {selectedCurrencyTo} is: {resultadoConversao.ToString("0.00")} {selectedCurrencyTo}";
             Error = "";
+            await CurrencyConversionService.InserirFirebase();
         }
 
     }

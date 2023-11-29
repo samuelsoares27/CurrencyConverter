@@ -1,6 +1,7 @@
 ﻿using CurrencyConverter.Models;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
+using Google.Cloud.Firestore;
 
 namespace CurrencyConverter.Services
 {
@@ -36,5 +37,33 @@ namespace CurrencyConverter.Services
             return response.Rates;
         }
 
+        public async Task<Currency> InserirFirebase()
+        {
+            var documentData = new Currency
+            {
+                Id = Guid.NewGuid(),
+                From = "BRL",
+                To = "USD",
+                Value = 5.5,
+                Date = DateTime.Now,
+            };
+
+            try
+            {
+                FirestoreDb db = FirestoreDb.Create("BdCurrency");
+
+                CollectionReference collection = db.Collection("CurrencyHistoric");
+
+                await collection.AddAsync(documentData);
+                return documentData;
+            }
+            catch (Exception e)
+            {
+                return documentData;
+                
+            }
+
+
+        }
     }
 }
